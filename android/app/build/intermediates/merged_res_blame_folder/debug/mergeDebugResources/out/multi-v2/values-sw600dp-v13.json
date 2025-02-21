@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.e_mart.app-mergeDebugResources-39:/values-sw600dp-v13/values-sw600dp-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\manim\\.gradle\\caches\\8.10.2\\transforms\\df35b2144e7079ae8fc221d7f7050695\\transformed\\jetified-standard-core-1.6.46\\res\\values-sw600dp-v13\\values-sw600dp-v13.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,93",
+                        "endLines": "2,15",
+                        "endColumns": "37,12",
+                        "endOffsets": "88,871"
+                    }
+                }
+            ]
+        }
+    ]
+}

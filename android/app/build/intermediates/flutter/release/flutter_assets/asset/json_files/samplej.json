@@ -1,0 +1,144 @@
+{
+  "products": [
+    {
+      "id": "p1",
+      "title": "Bananas",
+      "description": "Fresh and ripe bananas",
+      "category": "Magic Millets",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        {
+          "quantity": "1 kg",
+          "price": 29.2
+        },
+        {
+          "quantity": "5 kg",
+          "price": 139.99
+        },
+        {
+          "quantity": "10 kg",
+          "price": 269.99
+        },
+        {
+          "quantity": "20 kg",
+          "price": 499.99
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "title": "Aachi mutton masala",
+      "description": "Aachi mutton masala curry",
+      "category": "Traditional Rice",
+      "images": [
+        "asset/images/aachi1.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        {
+          "quantity": "1 kg",
+          "price": 39.99
+        },
+        {
+          "quantity": "5 kg",
+          "price": 189.99
+        },
+        {
+          "quantity": "10 kg",
+          "price": 349.99
+        },
+        {
+          "quantity": "20 kg",
+          "price": 649.99
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "title": "Aachi Curry Masala",
+      "description": "Aachi masala curry,Added blended spices & used to prepare veg curries,South Indian spicy curry masala,Veg masala,Product of India,From the house of Aachi",
+      "category": "Avul - Flakes",
+      "images": [
+        "asset/images/aachi_curry_masala.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        {
+          "quantity": "1 kg",
+          "price": 39.99
+        },
+        {
+          "quantity": "5 kg",
+          "price": 189.99
+        },
+        {
+          "quantity": "10 kg",
+          "price": 349.99
+        },
+        {
+          "quantity": "20 kg",
+          "price": 649.99
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "title": "Aachi Garam Masala",
+      "description": "Aachi Garam Masala curry powder",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/aachi_garam_masala.jpeg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        {
+          "quantity": "1 kg",
+          "price": 39.99
+        },
+        {
+          "quantity": "5 kg",
+          "price": 189.99
+        },
+        {
+          "quantity": "10 kg",
+          "price": 349.99
+        },
+        {
+          "quantity": "20 kg",
+          "price": 649.99
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "title": "Aachi Turmeric Powder",
+      "description": "Aachi Turmeric Powder",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/aachi_turmeric_powder.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        {
+          "quantity": "1 kg",
+          "price": 39.99
+        },
+        {
+          "quantity": "5 kg",
+          "price": 189.99
+        },
+        {
+          "quantity": "10 kg",
+          "price": 349.99
+        },
+        {
+          "quantity": "20 kg",
+          "price": 649.99
+        }
+      ]
+    }
+  ]
+}
