@@ -1,10 +1,8 @@
-import 'package:carousel_images/carousel_images.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class ImageCarousel extends StatelessWidget {
-   ImageCarousel({
-    super.key,
-  });
+  ImageCarousel({super.key});
 
   final List<String> listImages = [
     'asset/images/foodgrain.jpg',
@@ -18,22 +16,28 @@ class ImageCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-          top: 10, bottom: 10, left: 5, right: 5),
-      child: SizedBox(
-        height: 200,
-        width: double.infinity,
-        child: CarouselImages(
-          scaleFactor: 0.7,
-          listImages: listImages,
-          height: 200.0,
-          borderRadius: 30.0,
-          cachedNetworkImage: true,
-          verticalAlignment: Alignment.bottomCenter,
-          onTap: (index) {
-            print('Tapped on page $index');
-          },
-        )
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+      child: CarouselSlider(
+        options: CarouselOptions(
+          height: 210.0,
+          autoPlay: true, // Enables auto-scrolling
+          autoPlayInterval: Duration(seconds: 3), // Time between slides
+          autoPlayAnimationDuration: Duration(milliseconds: 800), // Smooth transition
+          autoPlayCurve: Curves.easeInOut,
+          enlargeCenterPage: true,
+          enableInfiniteScroll: true, 
+          viewportFraction: 0.85, 
+        ),
+        items: listImages.map((imagePath) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.cover,
+              width: double.infinity,
+            ),
+          );
+        }).toList(),
       ),
     );
   }

@@ -129,26 +129,22 @@ class _ProfilePageState extends State<ProfilePage> {
           const ListTile(
             leading: Icon(Icons.delete),
             title:
-                Text('Delete Account', style: TextStyle(color: GColors.textPrimary)),
+                Text('Download Your records', style: TextStyle(color: GColors.textPrimary)),
           ),
           const Divider(),
           Center(
             child: Column(
               children: [
-                const Text(
-                  'Hey there!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: GColors.textPrimary),
-                ),
-                const Text('Login/Signup to manage your Orders and a lot more'),
-                const SizedBox(height: 16),
+               
+                const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     foregroundColor: GColors.textSecondary,
-                    backgroundColor: GColors.secondary,
+                    backgroundColor: Colors.red,
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   ),
-                  child: const Text('Login/Signup'),
+                  child: const Text('Delete Account'),
                 ),
                 const SizedBox(height: 16),
               ],

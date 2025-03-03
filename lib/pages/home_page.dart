@@ -8,7 +8,8 @@ import 'package:e_mart/widgets/product_cards.dart';
 import 'package:e_mart/widgets/top_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:e_mart/widgets/product_model.dart'; // Ensure the import path is correct
+import 'package:e_mart/widgets/product_model.dart';
+import 'package:lottie/lottie.dart'; // Ensure the import path is correct
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,12 +53,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar:  HomeAppBar(),
       body: FutureBuilder<List<Product>>(
         future: _productsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Lottie.asset("asset/json_files/loading.json"));
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

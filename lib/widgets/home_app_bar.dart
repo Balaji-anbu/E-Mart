@@ -32,6 +32,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       leading: null,
       elevation: 10,
       backgroundColor: GColors.primary,

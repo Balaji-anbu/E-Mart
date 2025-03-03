@@ -45,7 +45,7 @@ class _bottomPageState extends State<bottomPage> {
       ),
       bottomNavigationBar: CurvedNavigationBar(
         color: GColors.primary,
-        backgroundColor: GColors.textSecondary,
+        backgroundColor: GColors.white,
         height: 50,
         animationDuration: const Duration(milliseconds: 300),
         onTap: _onItemTapped,
