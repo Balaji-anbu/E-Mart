@@ -11,7 +11,6 @@ import 'dart:convert';
 
 class TopDrawer extends StatefulWidget {
   const TopDrawer({super.key});
-
   @override
   _TopDrawerState createState() => _TopDrawerState();
 }
@@ -98,29 +97,30 @@ class _TopDrawerState extends State<TopDrawer> {
                   MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
               },
-              child: Text(
-                name.isNotEmpty ? name : "Loading...",
+              // ignore: prefer_interpolation_to_compose_strings
+              child: Text("Welcome, " + 
+                (name.isNotEmpty ? name : "....." ),
                 style: TextStyle(
                   fontSize: GSizes.fontSizeLg1,
                   fontWeight: FontWeight.w500,
-                  color: GColors.textPrimary,
+                  color: GColors.white,
                 ),
               ),
             ),
             accountEmail: Text(
-              email.isNotEmpty ? email : "Loading...",
+              email.isNotEmpty ? email : ".......",
               style: TextStyle(
                 fontSize: GSizes.fontSizeSm,
                 fontWeight: FontWeight.w400,
-                color: GColors.textPrimary,
+                color: GColors.white,
               ),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : "?",
+                name.isNotEmpty ? name[0].toUpperCase() : "",
                 style: TextStyle(
-                  fontSize: GSizes.fontSizeLg1,
+                  fontSize: 45,
                   fontWeight: FontWeight.bold,
                   color: GColors.primary,
                 ),
@@ -184,7 +184,7 @@ class _TopDrawerState extends State<TopDrawer> {
                 color: GColors.textPrimary,
               ),
             ),
-            leading: Icon(Icons.remove_done, size: GSizes.iconMd, color: GColors.iconPrimary),
+            leading: Icon(Icons.rule, size: GSizes.iconMd, color: GColors.iconPrimary),
           ),
           const Divider(height: 10),
           ListTile(
@@ -196,7 +196,7 @@ class _TopDrawerState extends State<TopDrawer> {
                 color: GColors.textPrimary,
               ),
             ),
-            leading: Icon(Icons.remove_done, size: GSizes.iconMd, color: GColors.iconPrimary),
+            leading: Icon(Icons.privacy_tip, size: GSizes.iconMd, color: GColors.iconPrimary),
           ),
           const Divider(height: 10),
           ListTile(
@@ -232,7 +232,7 @@ class _TopDrawerState extends State<TopDrawer> {
           const Divider(height: 10),
           ListTile(
             title: Text(
-              'Back',
+              'Close',
               style: TextStyle(
                 fontSize: GSizes.fontSizeMd,
                 fontWeight: FontWeight.w500,

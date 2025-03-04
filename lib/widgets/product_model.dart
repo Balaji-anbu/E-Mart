@@ -1,7 +1,6 @@
 class ProductOption {
   final String quantity;
   final double price;
-
   ProductOption({
     required this.quantity,
     required this.price,

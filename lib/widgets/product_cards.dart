@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-
 import '../pages/all_product_page.dart';
 
 class ProductCards extends StatefulWidget {

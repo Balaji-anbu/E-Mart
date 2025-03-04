@@ -28,12 +28,6 @@ class _OtpPageState extends State<OtpPage> {
 
   Future<void> updatePhoneNumber() async {
     String phoneNumber = widget.phoneNumber;
-    if (!RegExp(r'^\d{13}$').hasMatch(phoneNumber)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid mobile number. Must be 13 digits.")),
-      );
-      return;
-    }
 
     try {
       String? token = await storage1.read(key: "token");
@@ -58,7 +52,7 @@ class _OtpPageState extends State<OtpPage> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("✅ Mobile number updated successfully!")),
+          const SnackBar(content: Text("✅Signup successfull!")),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

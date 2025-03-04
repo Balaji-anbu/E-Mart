@@ -137,7 +137,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> {
                   // Cart Total and Confirm Button
                   Positioned(
                     top: 0,
-                    bottom: 0,
+                    bottom: 100,
                     right: 0,
                     left: 10,
                     child: Container(
@@ -163,15 +163,16 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> {
                                       color: GColors.white)),
                             ],
                           ),
+                          
                           if (selectedOption != null)
                             TextButton(
                               onPressed: () {
-                                // if (cartItem == null) {
-                                //   final selectedOption = widget.product.options
-                                //       .firstWhere((option) =>
-                                //   option.quantity == selectedOption);
-                                //   cart.addItem(widget.product);
-                                // }
+                                if (cartItem == null) {
+                                  widget.product.options
+                                      .firstWhere((option) =>
+                                  option.quantity == selectedOption!.quantity);
+                                  cart.addItem(widget.product);
+                                }
                                 Navigator.pop(context);
                               },
                               child: const Text("Confirm",
@@ -241,10 +242,8 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> {
               cartItem == null
                   ? ElevatedButton(
                 onPressed: () {
-                  //cart.addItem(
-                    // widget.product,
-                    // selectedOption!.quantity,
-                    // selectedOption!.price,);
+                  cart.addItem(
+                    widget.product,);
                   showToast('${widget.product.title} added to cart');
                   setState(() {}); // Refresh the UI to show quantity buttons
                 },

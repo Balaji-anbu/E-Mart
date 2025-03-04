@@ -52,7 +52,7 @@ class _bottomPageState extends State<bottomPage> {
         index: _selectedIndex,
         items: <Widget>[
            Icon(
-            Icons.favorite_outline_rounded,
+            Icons.emoji_transportation,
             size: GSizes.iconMd,
             color: GColors.button,
           ),
@@ -80,7 +80,7 @@ class _bottomPageState extends State<bottomPage> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 child:  Icon(
-                  Icons.shopping_cart_outlined,
+                  Icons.shopping_cart,
                   size: GSizes.iconMd,
                   color: GColors.white,
                 ),
