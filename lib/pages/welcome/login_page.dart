@@ -35,9 +35,12 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final responseData = jsonDecode(response.body);
+      print(responseData);
 
       if (response.statusCode == 200) {
         await _storage.write(key: 'token', value: responseData['token']);
+        await _storage.write(key: 'userId', value: responseData['user']['userId']);
+
         Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const bottomPage()),
         );

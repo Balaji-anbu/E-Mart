@@ -2,13 +2,10 @@ import 'package:customizable_counter/customizable_counter.dart';
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/pages/address_list_page.dart';
 import 'package:e_mart/pages/base_stepper.dart';
-
 import 'package:e_mart/widgets/cart_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:slider_button/slider_button.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -18,6 +15,13 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<Cart>(context, listen: false).fetchCartFromServer();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
@@ -40,10 +44,7 @@ class _CartPageState extends State<CartPage> {
       ),
       body: Column(
         children: [
-          // Add the BaseStepper below the AppBar
-          BaseStepper(
-            activeStep: 0, // Set the active step to indicate the current page
-          ),
+          BaseStepper(activeStep: 0), // Set the active step to indicate the current page
           Expanded(
             child: cart.items.isEmpty
                 ? Center(
@@ -86,8 +87,7 @@ class _CartPageState extends State<CartPage> {
                       itemCount: cart.items.length,
                       itemBuilder: (context, index) {
                         final cartItem = cart.items.values.toList()[index];
-                        final product = cartItem
-                            .product; // Accessing the product from CartItem
+                        final product = cartItem.product; // Accessing the product from CartItem
                         return Card(
                           margin: const EdgeInsets.all(6.0),
                           child: Padding(
@@ -101,7 +101,6 @@ class _CartPageState extends State<CartPage> {
                                       height: 100,
                                       child: Image.asset(
                                         product.images[0],
-                                        // Assuming first image from product's images list
                                         width: 100,
                                         height: 100,
                                         fit: BoxFit.cover,
@@ -114,7 +113,6 @@ class _CartPageState extends State<CartPage> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
                                         product.title,
@@ -123,49 +121,20 @@ class _CartPageState extends State<CartPage> {
                                             .titleMedium,
                                       ),
                                       CustomizableCounter(
-                                        borderColor: Colors.transparent,
-                                        borderWidth: 0,
-                                        borderRadius: 10,
-                                        backgroundColor: Colors.transparent,
-                                        buttonText: "",
-                                        textColor: Colors.black,
-                                        textSize: 12,
                                         count: cartItem.quantity.toDouble(),
-                                        // Ensure count is double
                                         step: 1,
                                         minCount: 1,
-                                        // Quantity can't be less than 1
                                         maxCount: 100,
-                                        incrementIcon: Icon(
-                                          Icons.add,
-                                          color: GColors.iconPrimary,
-                                          size: 15,
-                                        ),
-                                        decrementIcon: Icon(
-                                          Icons.remove,
-                                          color: GColors.iconPrimary,
-                                          size: 15,
-                                        ),
                                         onCountChange: (count) {
                                           setState(() {
                                             cart.updateQuantity(
                                                 product.id,
-                                                count
-                                                    .toInt()); // Convert double to int here
+                                                count.toInt());
                                           });
-                                        },
-                                        onIncrement: (count) {
-                                          print(
-                                              "Incremented to: ${count.toInt()}");
-                                        },
-                                        onDecrement: (count) {
-                                          print(
-                                              "Decremented to: ${count.toInt()}");
                                         },
                                       ),
                                       Text(
                                         '₹${product.options[0].price.toStringAsFixed(1)}',
-                                        // Assuming first product option's price
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall,
@@ -174,24 +143,13 @@ class _CartPageState extends State<CartPage> {
                                   ),
                                 ),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     IconButton(
                                       icon: const Icon(Icons.close),
                                       onPressed: () {
                                         setState(() {
-                                          cart.removeItem(product
-                                              .id); // Removes the item and updates the cart
+                                          cart.removeItem(product.id);
                                         });
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                          Icons.favorite_outline_rounded),
-                                      onPressed: () {
-                                        // Add to wishlist logic here (if applicable)
                                       },
                                     ),
                                   ],
@@ -227,94 +185,25 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
             ),
-          SizedBox(
-            width: 200.0,
-            height: 60.0,
-            child: Shimmer.fromColors(
-              baseColor: GColors.secondary,
-              highlightColor: GColors.primary,
-              child: Text(
-                'continue >>>',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                ),
+          if (cart.items.isNotEmpty)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddressListPage(),
+                  ),
+                );
+              },
+              child: const Text('Continue'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: GColors.textSecondary,
+                backgroundColor: GColors.secondary,
               ),
             ),
-          ),
-
-          SliderButton(
-            height: 60,
-            width: 230,
-            highlightedColor: GColors.primary,
-            buttonColor: GColors.grey,
-            baseColor: GColors.secondary,
-            action: () async {
-              Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddressListPage(),
-                          ),
-                        );
-              return true;
-            },
-            label: Center(
-              child: Text(
-                "Slide to continue",
-                style: TextStyle(
-                    color: GColors.secondary,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18),
-              ),
-            ),
-            icon: Text(
-              ">>>",
-              style: TextStyle(
-                color: GColors.black,
-                fontWeight: FontWeight.w400,
-                fontSize: 20,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          )
+          const SizedBox(height: 10)
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   backgroundColor: GColors.secondary,
-      //   selectedItemColor: GColors.white,
-      //   unselectedItemColor: GColors.white,
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.shopping_cart,
-      //         color: GColors.textSecondary,
-      //       ),
-      //       label: 'Continue Shopping',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.payment,
-      //         color: GColors.textSecondary,
-      //       ),
-      //       label: 'Continue',
-      //     ),
-      //   ],
-      //   onTap: (index) {
-      //     if (index == 0) {
-      //       // Navigate to shopping page logic here
-      //     } else if (index == 1) {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) => AddressListPage(),
-      //         ),
-      //       );
-      //     }
-      //   },
-      // ),
     );
   }
 }

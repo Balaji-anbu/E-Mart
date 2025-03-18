@@ -10,27 +10,15 @@
         "asset/images/foodgrain.jpg"
       ],
       "options": [
-        {
-          "quantity": "1 kg",
-          "price": 29.2
-        },
-        {
-          "quantity": "5 kg",
-          "price": 139.99
-        },
-        {
-          "quantity": "10 kg",
-          "price": 269.99
-        },
-        {
-          "quantity": "20 kg",
-          "price": 499.99
-        }
+        { "quantity": "1 kg", "price": 29.2 },
+        { "quantity": "5 kg", "price": 139.99 },
+        { "quantity": "10 kg", "price": 269.99 },
+        { "quantity": "20 kg", "price": 499.99 }
       ]
     },
     {
       "id": "p2",
-      "title": "Aachi mutton masala",
+      "title": "Aachi Mutton Masala",
       "description": "Aachi mutton masala curry",
       "category": "Traditional Rice",
       "images": [
@@ -38,22 +26,10 @@
         "asset/images/foodgrain.jpg"
       ],
       "options": [
-        {
-          "quantity": "1 kg",
-          "price": 39.99
-        },
-        {
-          "quantity": "5 kg",
-          "price": 189.99
-        },
-        {
-          "quantity": "10 kg",
-          "price": 349.99
-        },
-        {
-          "quantity": "20 kg",
-          "price": 649.99
-        }
+        { "quantity": "1 kg", "price": 39.99 },
+        { "quantity": "5 kg", "price": 189.99 },
+        { "quantity": "10 kg", "price": 349.99 },
+        { "quantity": "20 kg", "price": 649.99 }
       ]
     },
     {
@@ -66,22 +42,10 @@
         "asset/images/foodgrain.jpg"
       ],
       "options": [
-        {
-          "quantity": "1 kg",
-          "price": 39.99
-        },
-        {
-          "quantity": "5 kg",
-          "price": 189.99
-        },
-        {
-          "quantity": "10 kg",
-          "price": 349.99
-        },
-        {
-          "quantity": "20 kg",
-          "price": 649.99
-        }
+        { "quantity": "1 kg", "price": 39.99 },
+        { "quantity": "5 kg", "price": 189.99 },
+        { "quantity": "10 kg", "price": 349.99 },
+        { "quantity": "20 kg", "price": 649.99 }
       ]
     },
     {
@@ -94,22 +58,10 @@
         "asset/images/foodgrain.jpg"
       ],
       "options": [
-        {
-          "quantity": "1 kg",
-          "price": 39.99
-        },
-        {
-          "quantity": "5 kg",
-          "price": 189.99
-        },
-        {
-          "quantity": "10 kg",
-          "price": 349.99
-        },
-        {
-          "quantity": "20 kg",
-          "price": 649.99
-        }
+        { "quantity": "1 kg", "price": 39.99 },
+        { "quantity": "5 kg", "price": 189.99 },
+        { "quantity": "10 kg", "price": 349.99 },
+        { "quantity": "20 kg", "price": 649.99 }
       ]
     },
     {
@@ -122,22 +74,404 @@
         "asset/images/foodgrain.jpg"
       ],
       "options": [
-        {
-          "quantity": "1 kg",
-          "price": 39.99
-        },
-        {
-          "quantity": "5 kg",
-          "price": 189.99
-        },
-        {
-          "quantity": "10 kg",
-          "price": 349.99
-        },
-        {
-          "quantity": "20 kg",
-          "price": 649.99
-        }
+        { "quantity": "1 kg", "price": 39.99 },
+        { "quantity": "5 kg", "price": 189.99 },
+        { "quantity": "10 kg", "price": 349.99 },
+        { "quantity": "20 kg", "price": 649.99 }
+      ]
+    },
+    {
+      "id": "p6",
+      "title": "Organic Red Rice",
+      "description": "Premium organic red rice",
+      "category": "Rice & Grains",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "1 kg", "price": 49.99 },
+        { "quantity": "5 kg", "price": 229.99 },
+        { "quantity": "10 kg", "price": 459.99 },
+        { "quantity": "20 kg", "price": 899.99 }
+      ]
+    },
+    {
+      "id": "p7",
+      "title": "Mango Pickle",
+      "description": "Tangy and spicy mango pickle",
+      "category": "Condiments",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "500 g", "price": 99.99 },
+        { "quantity": "1 kg", "price": 189.99 },
+        { "quantity": "2 kg", "price": 369.99 }
+      ]
+    },
+    {
+      "id": "p8",
+      "title": "Ghee",
+      "description": "Pure clarified butter",
+      "category": "Dairy",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "500 g", "price": 249.99 },
+        { "quantity": "1 kg", "price": 499.99 },
+        { "quantity": "2 kg", "price": 999.99 }
+      ]
+    },
+    {
+      "id": "p9",
+      "title": "Whole Wheat Flour",
+      "description": "Finely ground whole wheat flour",
+      "category": "Flour & Grains",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "1 kg", "price": 49.99 },
+        { "quantity": "5 kg", "price": 239.99 },
+        { "quantity": "10 kg", "price": 479.99 },
+        { "quantity": "20 kg", "price": 949.99 }
+      ]
+    },
+    {
+      "id": "p10",
+      "title": "Organic Honey",
+      "description": "Pure, organic honey",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "250 g", "price": 299.99 },
+        { "quantity": "500 g", "price": 599.99 },
+        { "quantity": "1 kg", "price": 1199.99 }
+      ]
+    },
+    {
+      "id": "p11",
+      "title": "Cashew Nuts",
+      "description": "Premium roasted cashew nuts",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 149.99 },
+        { "quantity": "500 g", "price": 399.99 },
+        { "quantity": "1 kg", "price": 799.99 }
+      ]
+    },
+    {
+      "id": "p12",
+      "title": "Cinnamon Powder",
+      "description": "Pure cinnamon powder",
+      "category": "Spices",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "100 g", "price": 99.99 },
+        { "quantity": "200 g", "price": 199.99 },
+        { "quantity": "500 g", "price": 499.99 }
+      ]
+    },
+    {
+      "id": "p13",
+      "title": "Garlic Powder",
+      "description": "Finely ground garlic powder",
+      "category": "Spices",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "100 g", "price": 79.99 },
+        { "quantity": "200 g", "price": 159.99 },
+        { "quantity": "500 g", "price": 399.99 }
+      ]
+    },
+    {
+      "id": "p14",
+      "title": "Clove Powder",
+      "description": "Premium clove powder",
+      "category": "Spices",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "100 g", "price": 199.99 },
+        { "quantity": "200 g", "price": 399.99 },
+        { "quantity": "500 g", "price": 799.99 }
+      ]
+    },
+    {
+      "id": "p15",
+      "title": "Cardamom Powder",
+      "description": "Premium cardamom powder",
+      "category": "Spices",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "100 g", "price": 249.99 },
+        { "quantity": "200 g", "price": 499.99 },
+        { "quantity": "500 g", "price": 999.99 }
+      ]
+    },
+    {
+      "id": "p16",
+      "title": "Coriander Powder",
+      "description": "Finely ground coriander powder",
+      "category": "Spices",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "100 g", "price": 89.99 },
+        { "quantity": "200 g", "price": 179.99 },
+        { "quantity": "500 g", "price": 449.99 }
+      ]
+    },
+    {
+      "id": "p17",
+      "title": "Basmati Rice",
+      "description": "Premium long-grain basmati rice",
+      "category": "Rice & Grains",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "1 kg", "price": 89.99 },
+        { "quantity": "5 kg", "price": 429.99 },
+        { "quantity": "10 kg", "price": 859.99 },
+        { "quantity": "20 kg", "price": 1699.99 }
+      ]
+    },
+    {
+      "id": "p18",
+      "title": "Peanut Butter",
+      "description": "Natural peanut butter",
+      "category": "Dairy",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 149.99 },
+        { "quantity": "500 g", "price": 299.99 },
+        { "quantity": "1 kg", "price": 599.99 }
+      ]
+    },
+    {
+      "id": "p19",
+      "title": "Dried Apricots",
+      "description": "Premium dried apricots",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 299.99 },
+        { "quantity": "500 g", "price": 599.99 },
+        { "quantity": "1 kg", "price": 1199.99 }
+      ]
+    },
+    {
+      "id": "p20",
+      "title": "Dates",
+      "description": "Premium quality dates",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 149.99 },
+        { "quantity": "500 g", "price": 299.99 },
+        { "quantity": "1 kg", "price": 599.99 }
+      ]
+    },
+    {
+      "id": "p21",
+      "title": "Organic Almonds",
+      "description": "Organic roasted almonds",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 199.99 },
+        { "quantity": "500 g", "price": 399.99 },
+        { "quantity": "1 kg", "price": 799.99 }
+      ]
+    },
+    {
+      "id": "p22",
+      "title": "Oats",
+      "description": "Organic rolled oats",
+      "category": "Cereals & Grains",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "500 g", "price": 79.99 },
+        { "quantity": "1 kg", "price": 159.99 },
+        { "quantity": "2 kg", "price": 319.99 }
+      ]
+    },
+    {
+      "id": "p23",
+      "title": "Quinoa",
+      "description": "Organic quinoa",
+      "category": "Cereals & Grains",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "500 g", "price": 199.99 },
+        { "quantity": "1 kg", "price": 399.99 },
+        { "quantity": "2 kg", "price": 799.99 }
+      ]
+    },
+    {
+      "id": "p24",
+      "title": "Brown Rice",
+      "description": "Organic brown rice",
+      "category": "Rice & Grains",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "1 kg", "price": 69.99 },
+        { "quantity": "5 kg", "price": 329.99 },
+        { "quantity": "10 kg", "price": 659.99 },
+        { "quantity": "20 kg", "price": 1299.99 }
+      ]
+    },
+    {
+      "id": "p25",
+      "title": "Whole Wheat Pasta",
+      "description": "Organic whole wheat pasta",
+      "category": "Pasta & Noodles",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "500 g", "price": 119.99 },
+        { "quantity": "1 kg", "price": 229.99 },
+        { "quantity": "2 kg", "price": 449.99 }
+      ]
+    },
+    {
+      "id": "p26",
+      "title": "Chia Seeds",
+      "description": "Organic chia seeds",
+      "category": "Seeds & Nuts",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 149.99 },
+        { "quantity": "500 g", "price": 299.99 },
+        { "quantity": "1 kg", "price": 599.99 }
+      ]
+    },
+    {
+      "id": "p27",
+      "title": "Flax Seeds",
+      "description": "Organic flax seeds",
+      "category": "Seeds & Nuts",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 149.99 },
+        { "quantity": "500 g", "price": 299.99 },
+        { "quantity": "1 kg", "price": 599.99 }
+      ]
+    },
+    {
+      "id": "p28",
+      "title": "Pumpkin Seeds",
+      "description": "Organic pumpkin seeds",
+      "category": "Seeds & Nuts",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 169.99 },
+        { "quantity": "500 g", "price": 339.99 },
+        { "quantity": "1 kg", "price": 699.99 }
+      ]
+    },
+    {
+      "id": "p29",
+      "title": "Sunflower Seeds",
+      "description": "Organic sunflower seeds",
+      "category": "Seeds & Nuts",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 129.99 },
+        { "quantity": "500 g", "price": 259.99 },
+        { "quantity": "1 kg", "price": 499.99 }
+      ]
+    },
+    {
+      "id": "p30",
+      "title": "Sesame Seeds",
+      "description": "Organic sesame seeds",
+      "category": "Seeds & Nuts",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 149.99 },
+        { "quantity": "500 g", "price": 299.99 },
+        { "quantity": "1 kg", "price": 599.99 }
+      ]
+    },
+    {
+      "id": "p31",
+      "title": "Pistachios",
+      "description": "Premium pistachios",
+      "category": "Honey/Dry Fruits",
+      "images": [
+        "asset/images/foodgrain.jpg",
+        "asset/images/foodgrain.jpg"
+      ],
+      "options": [
+        { "quantity": "200 g", "price": 199.99 },
+        { "quantity": "500 g", "price": 399.99 },
+        { "quantity": "1 kg", "price": 799.99 }
       ]
     }
   ]

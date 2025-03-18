@@ -65,6 +65,8 @@ dependencies:
   intl_phone_field: ^3.2.0
   dotenv: ^4.2.0
   flutter_dotenv: ^5.2.1
+  csv: ^6.0.0
+  shared_preferences: ^2.5.2
 
 dependency_overrides:
   http: ^0.13.3
@@ -97,6 +99,7 @@ flutter:
      - asset/images/
      - asset/json_files/
      - .env
+     - asset/GroceryDataset.csv
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

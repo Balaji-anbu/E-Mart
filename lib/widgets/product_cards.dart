@@ -49,7 +49,7 @@ class _ProductCardsState extends State<ProductCards> {
     final cart = Provider.of<Cart>(context);
     final wishlist = Provider.of<Wishlist>(context);
     final double screenWidth = MediaQuery.of(context).size.width;
-    
+
     return Padding(
       padding: const EdgeInsets.all(GSizes.sm),
       child: Column(
@@ -58,16 +58,21 @@ class _ProductCardsState extends State<ProductCards> {
             children: [
               Text(
                 'Products',
-                style: TextStyle(fontSize: GSizes.fontSizeXl1, fontWeight: FontWeight.w600, color: GColors.textPrimary),
+                style: TextStyle(
+                  fontSize: GSizes.fontSizeXl1, 
+                  fontWeight: FontWeight.w600, 
+                  color: GColors.textPrimary,
+                ),
               ),
               const Spacer(),
               GestureDetector(
                 child: Text(
                   'View all',
                   style: TextStyle(
-                      fontSize: GSizes.fontSizeMd,
-                      fontWeight: FontWeight.w500,
-                      color: GColors.secondary),
+                    fontSize: GSizes.fontSizeMd, 
+                    fontWeight: FontWeight.w500, 
+                    color: GColors.secondary,
+                  ),
                 ),
                 onTap: () {
                   Navigator.push(
@@ -85,110 +90,126 @@ class _ProductCardsState extends State<ProductCards> {
               crossAxisCount: screenWidth < 600 ? 2 : 3,
               crossAxisSpacing: GSizes.sm,
               mainAxisSpacing: GSizes.sm,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.65,
             ),
-            itemCount: products.length,
+            itemCount: products.length > 15 ? 15 : products.length,
             itemBuilder: (context, index) {
               final product = products[index];
               final cartItem = cart.items[product.id];
               final wishlistItem = wishlist.items[product.id];
 
-              return Card(
-                color: GColors.accent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              return Container(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 227, 229, 234), // Light grey background
+                  borderRadius: BorderRadius.circular(16), // Rounded corners
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 8
+                    ),
+                  ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (BuildContext context) {
-                              return ProductModalBottomSheet(product: product);
-                            },
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            product.images.isNotEmpty ? product.images.first : 'assets/images/placeholder.jpg',
-                            height: screenWidth < 600 ? 100 : 150,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        product.title,
-                        style: TextStyle(fontSize: GSizes.fontSizeMd, fontWeight: FontWeight.w600, color: GColors.textPrimary),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        '₹${product.options.isNotEmpty ? product.options.first.price.toStringAsFixed(2) : '0.00'}',
-                        style: TextStyle(fontSize: GSizes.fontSizeMd, fontWeight: FontWeight.w600, color: Colors.green),
-                      ),
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              if (wishlistItem == null) {
-                                wishlist.addItem(product);
-                                showToast('${product.title} added to wishlist');
-                              } else {
-                                wishlist.removeItem(product.id);
-                                showToast('${product.title} removed from wishlist');
-                              }
-                            },
-                            icon: Icon(
-                              wishlistItem == null ? Icons.favorite_outline : Icons.favorite,
-                              color: GColors.error,
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (BuildContext context) {
+                        return ProductModalBottomSheet(product: product);
+                      },
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12), // Consistent padding
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Hero(
+                          tag: 'product-image-${product.id}',
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12), // Rounded image
+                            child: Image.asset(
+                              product.images.isNotEmpty
+                                  ? product.images.first
+                                  : 'assets/images/placeholder.jpg',
+                              height: screenWidth < 600 ? 120 : 160,
+                              width: double.infinity,
+                              fit: BoxFit.fill,
                             ),
                           ),
-                          cartItem == null
-                              ? ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.all(8),
-                                    backgroundColor: GColors.secondary,
-                                  ),
-                                  child: const Icon(Icons.add, color: Colors.white),
-                                  onPressed: () {
-                                    cart.addItem(product);
-                                    showToast('${product.title} added to cart');
-                                  },
-                                )
-                              : Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        if (cartItem.quantity > 1) {
-                                          cart.updateQuantity(product.id, cartItem.quantity - 1);
-                                        } else {
-                                          cart.removeItem(product.id);
-                                          showToast('${product.title} removed from cart');
-                                        }
-                                      },
-                                      icon: Icon(Icons.remove, color: Colors.red),
-                                    ),
-                                    Text('${cartItem.quantity}', style: TextStyle(color: Colors.black, fontSize: GSizes.fontSizeMd)),
-                                    IconButton(
-                                      onPressed: () {
-                                        cart.updateQuantity(product.id, cartItem.quantity + 1);
-                                      },
-                                      icon: Icon(Icons.add, color: Colors.greenAccent),
-                                    ),
-                                  ],
+                        ),
+                        const SizedBox(height: 12), // Increased spacing
+                        Text(
+                          product.title,
+                          style: TextStyle(
+                            fontSize: GSizes.fontSizeMd, 
+                            fontWeight: FontWeight.w600, 
+                            color: GColors.textPrimary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 4), // Space between price and title
+                        Text(
+                          '₹${product.options.isNotEmpty ? product.options.first.price.toStringAsFixed(2) : '0.00'}',
+                          style: TextStyle(
+                            fontSize: GSizes.fontSizeMd, 
+                            fontWeight: FontWeight.w600, 
+                            color: Colors.green,
+                          ),
+                        ),
+                        const Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (wishlistItem == null) {
+                                  wishlist.addItem(product);
+                                  showToast('${product.title} added to wishlist');
+                                } else {
+                                  wishlist.removeItem(product.id);
+                                  showToast('${product.title} removed from wishlist');
+                                }
+                              },
+                              icon: Icon(
+                                wishlistItem == null ? Icons.favorite_outline : Icons.favorite,
+                                color: GColors.error,
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                            GestureDetector(
+                              onTap: () {
+                                if (cartItem == null) {
+                                  cart.addItem(product);
+                                  showToast('${product.title} added to cart');
+                                } else {
+                                  cart.removeItem(product.id);
+                                  showToast('${product.title} removed from cart');
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: GColors.secondary,
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                        ],
-                      ),
-                    ],
+                                padding: const EdgeInsets.all(10),
+                                child: cartItem == null
+                                    ? Icon(Icons.add, color: Colors.white)
+                                    : Row(
+                                        children: [
+                                          Icon(Icons.remove, color: Colors.red),
+                                          Text('${cartItem.quantity}', style: TextStyle(color: Colors.black, fontSize: GSizes.fontSizeMd)),
+                                          Icon(Icons.add, color: Colors.greenAccent),
+                                        ],
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
