@@ -1,7 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/constants/sizes.dart';
-import 'package:e_mart/pages/4th_page.dart';
+import 'package:e_mart/products/all_product_page.dart';
 import 'package:e_mart/pages/cart_page.dart';
 import 'package:e_mart/pages/categories_page.dart';
 import 'package:e_mart/pages/home_page.dart';
@@ -23,7 +23,7 @@ class _bottomPageState extends State<bottomPage> {
   int _selectedIndex = 2;
 
   final List<Widget> _pages = [
-     ForthPage(),
+     AllProductPage(),
     categoriesPage(),
     HomePage(),
     WishlistPage(),

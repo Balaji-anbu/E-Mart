@@ -1,6 +1,6 @@
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/constants/sizes.dart';
-import 'package:e_mart/widgets/product_model.dart';
+import 'package:e_mart/products/product_model.dart';
 import 'package:flutter/material.dart'; // Import the Product model
 
 class ProductList extends StatelessWidget {

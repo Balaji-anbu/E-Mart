@@ -1,4 +1,4 @@
-import 'package:e_mart/widgets/product_model.dart';
+import 'package:e_mart/products/product_model.dart';
 import 'package:flutter/foundation.dart';
 
 class WishlistItem {

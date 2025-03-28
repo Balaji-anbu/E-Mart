@@ -1,16 +1,13 @@
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/constants/sizes.dart';
-import 'package:e_mart/pages/ProductBottomSheet.dart';
+import 'package:e_mart/products/ProductBottomSheet.dart';
 import 'package:e_mart/widgets/cart_model.dart';
-import 'package:e_mart/widgets/product_model.dart' as model;
-import 'package:e_mart/widgets/product_model.dart';
+import 'package:e_mart/products/product_model.dart';
 import 'package:e_mart/widgets/toast_msg.dart';
 import 'package:e_mart/widgets/wishlist_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import '../pages/all_product_page.dart';
+import 'all_product_page.dart';
 
 class ProductCards extends StatefulWidget {
   final List<Product> product;
@@ -22,30 +19,9 @@ class ProductCards extends StatefulWidget {
 }
 
 class _ProductCardsState extends State<ProductCards> {
-  List<model.Product> products = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadProducts();
-  }
-
-  Future<void> loadProducts() async {
-    try {
-      final String response = await rootBundle.loadString('asset/json_files/samplej.json');
-      final data = json.decode(response);
-      setState(() {
-        products = (data['products'] as List)
-            .map((i) => model.Product.fromJson(i))
-            .toList();
-      });
-    } catch (error) {
-      print('Error loading products: $error');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final products = widget.product;
     final cart = Provider.of<Cart>(context);
     final wishlist = Provider.of<Wishlist>(context);
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -151,14 +127,7 @@ class _ProductCardsState extends State<ProductCards> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 4), // Space between price and title
-                        Text(
-                          '₹${product.options.isNotEmpty ? product.options.first.price.toStringAsFixed(2) : '0.00'}',
-                          style: TextStyle(
-                            fontSize: GSizes.fontSizeMd, 
-                            fontWeight: FontWeight.w600, 
-                            color: Colors.green,
-                          ),
-                        ),
+                       
                         const Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,15 +1,13 @@
-import 'dart:convert';
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/widgets/home_app_bar.dart';
-import 'package:e_mart/widgets/horizontal_product_cards.dart';
 import 'package:e_mart/widgets/image_carousel.dart';
 import 'package:e_mart/widgets/popular_categories.dart';
-import 'package:e_mart/widgets/product_cards.dart';
+import 'package:e_mart/products/product_cards.dart';
 import 'package:e_mart/widgets/top_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:e_mart/widgets/product_model.dart';
-import 'package:lottie/lottie.dart'; // Ensure the import path is correct
+import 'package:e_mart/products/product_model.dart';
+import 'package:lottie/lottie.dart';
+import 'package:e_mart/services/product_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,15 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _productsFuture = fetchProducts();
-  }
-
-  Future<List<Product>> fetchProducts() async {
-    final String response = await rootBundle.loadString('asset/json_files/samplej.json');
-    final data = await json.decode(response);
-    return (data['products'] as List)
-        .map((productJson) => Product.fromJson(productJson))
-        .toList();
+    _productsFuture = ProductService().fetchProducts();
   }
 
   void _scrollToTop() {
@@ -42,6 +32,14 @@ class _HomePageState extends State<HomePage> {
       duration: const Duration(seconds: 1),
       curve: Curves.easeInOut,
     );
+  }
+
+  Map<String, List<Product>> _groupProductsByCategory(List<Product> products) {
+    final Map<String, List<Product>> groupedProducts = {};
+    for (var product in products) {
+      groupedProducts.putIfAbsent(product.category, () => []).add(product);
+    }
+    return groupedProducts;
   }
 
   @override
@@ -54,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:  HomeAppBar(),
+      appBar: HomeAppBar(),
       body: FutureBuilder<List<Product>>(
         future: _productsFuture,
         builder: (context, snapshot) {
@@ -67,28 +65,41 @@ class _HomePageState extends State<HomePage> {
           }
 
           final products = snapshot.data!;
+          final groupedProducts = _groupProductsByCategory(products);
 
           return SingleChildScrollView(
             controller: _scrollController,
             child: Column(
               children: [
-                // Uncomment if location widget is needed
-                // const GetLocation(),
-
-                // Search bar
-                //const SearchTextBar(),
-
                 // Popular categories
                 const PopularCategories(),
 
                 // Image carousel
-                 ImageCarousel(),
+                ImageCarousel(),
 
-                // Product card
-                ProductCards(product: products,),
+                // Display products grouped by category
+                ...groupedProducts.entries.map((entry) {
+                  final category = entry.key;
+                  final categoryProducts = entry.value;
 
-                // Horizontal product cards
-                 HorizontalProductCards(product: [],),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: GColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      ProductCards(product: categoryProducts),
+                    ],
+                  );
+                }).toList(),
               ],
             ),
           );
@@ -98,11 +109,11 @@ class _HomePageState extends State<HomePage> {
       // Floating arrow button
       floatingActionButton: _scrollController.hasClients && _scrollController.offset > 100
           ? FloatingActionButton(
-        backgroundColor: GColors.secondary,
-        foregroundColor: GColors.white,
-        onPressed: _scrollToTop,
-        child: const Icon(Icons.arrow_upward),
-      )
+              backgroundColor: GColors.secondary,
+              foregroundColor: GColors.white,
+              onPressed: _scrollToTop,
+              child: const Icon(Icons.arrow_upward),
+            )
           : null,
 
       // Drawer

@@ -1,4 +1,4 @@
-import 'package:e_mart/widgets/product_model.dart';
+import 'package:e_mart/products/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -16,7 +16,6 @@ class CartItem {
 }
 
 final storage1 = FlutterSecureStorage();
-
 class Cart with ChangeNotifier {
   final Map<String, CartItem> _items = {};
 

@@ -1,6 +1,6 @@
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/widgets/cart_model.dart';
-import 'package:e_mart/widgets/product_model.dart' as model;
+import 'package:e_mart/products/product_model.dart' as model;
 import 'package:e_mart/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -280,6 +280,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                                 for (var option in selectedOptions) {
                                   if (!optionsInCart.containsKey(option) || optionsInCart[option] == false) {
                                     final modifiedProduct = model.Product(
+                                      price: widget.product.price,
                                       id: "${widget.product.id}_${option.quantity}",
                                       title: "${widget.product.title} (${option.quantity})",
                                       description: widget.product.description,
@@ -361,6 +362,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                 selectedOptions.add(option);
                 if (!isInCart) {
                   final modifiedProduct = model.Product(
+                    price: widget.product.price,
                     id: optionSpecificId,
                     title: "${widget.product.title} (${option.quantity})",
                     description: widget.product.description,
@@ -510,6 +512,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                   GestureDetector(
                     onTap: () {
                       final modifiedProduct = model.Product(
+                        price: widget.product.price,
                         id: optionSpecificId,
                         title: "${widget.product.title} (${option.quantity})",
                         description: widget.product.description,

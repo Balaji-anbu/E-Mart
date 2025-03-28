@@ -1,16 +1,14 @@
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/constants/sizes.dart';
-import 'package:e_mart/pages/ProductBottomSheet.dart';
-import 'package:e_mart/pages/all_product_page.dart';
+import 'package:e_mart/products/ProductBottomSheet.dart';
+import 'package:e_mart/products/all_product_page.dart';
 import 'package:e_mart/widgets/cart_model.dart';
-import 'package:e_mart/widgets/product_model.dart';
+import 'package:e_mart/products/product_model.dart';
 import 'package:e_mart/widgets/toast_msg.dart';
 import 'package:e_mart/widgets/wishlist_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:e_mart/widgets/product_model.dart' as model;
+import 'package:e_mart/services/product_service.dart';
 
 class HorizontalProductCards extends StatefulWidget {
   final List<Product> product;
@@ -22,31 +20,9 @@ class HorizontalProductCards extends StatefulWidget {
 }
 
 class _HorizontalProductCardsState extends State<HorizontalProductCards> {
-  List<model.Product> products = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadProducts();
-  }
-
-  Future<void> loadProducts() async {
-    try {
-      final String response = await rootBundle.loadString('asset/json_files/samplej.json');
-      final data = json.decode(response);
-      setState(() {
-        products = (data['products'] as List).map((i) => model.Product.fromJson(i)).toList();
-      });
-    } catch (error) {
-      print('Error loading products: $error');
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Failed to load products'),
-      ));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final products = widget.product.isNotEmpty ? widget.product : ProductService().products;
     final cart = Provider.of<Cart>(context);
     final wishlist = Provider.of<Wishlist>(context);
 
@@ -88,14 +64,6 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
                 children: products.map((product) {
                   final cartItem = cart.items[product.id];
                   final wishlistItem = wishlist.items[product.id];
-
-                  // // Using the first image and first pricing option from the product
-                  // final String firstImage = product.images.isNotEmpty
-                  //     ? product.images.first
-                  //     : 'assets/images/placeholder.jpg'; // Fallback image
-                  // final model.ProductOption firstOption = product.options.isNotEmpty
-                  //     ? product.options.first
-                  //     : model.ProductOption(quantity: "0", price: 0.0); // Fallback option
 
                   return Card(
                     color: GColors.accent,
@@ -139,10 +107,7 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),
-                          Text(
-                            '₹${product.options.isNotEmpty ? product.options.first.price.toStringAsFixed(2) : '0.00'}',
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.green),
-                          ),
+                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
