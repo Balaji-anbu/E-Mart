@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
         future: _productsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: Lottie.asset("asset/json_files/loading.json"));
+            return Center(child: Lottie.asset("asset/json_files/product_load.json"));
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/widgets/cart_model.dart';
 import 'package:e_mart/products/product_model.dart' as model;
 import 'package:e_mart/widgets/toast_msg.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../constants/sizes.dart';
 
@@ -17,8 +19,8 @@ class ProductModalBottomSheet extends StatefulWidget {
 }
 
 class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with SingleTickerProviderStateMixin {
-  Set<model.ProductOption> selectedOptions = {};
-  Map<model.ProductOption, bool> optionsInCart = {};
+  Set<model.ProductVariant> selectedVariants = {};
+  Map<model.ProductVariant, bool> variantsInCart = {};
   late AnimationController _animationController;
   late Animation<double> _animation;
   int _currentPage = 0;
@@ -46,7 +48,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
-    bool hasSelections = selectedOptions.isNotEmpty;
+    bool hasSelections = selectedVariants.isNotEmpty;
 
     return AnimatedBuilder(
       animation: _animation,
@@ -98,32 +100,52 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                               SizedBox(
                                 height: 220,
                                 child: PageView.builder(
-                                  itemCount: widget.product.images.length,
+                                  itemCount: widget.product.variants.length,
                                   onPageChanged: (index) {
                                     setState(() {
                                       _currentPage = index;
                                     });
                                   },
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.05),
-                                            blurRadius: 8,
-                                            spreadRadius: 2,
+                                    final variant = widget.product.variants[index];
+                                    return FutureBuilder<List<String>>(
+                                      future: widget.product.downloadImages(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return  Center(child: Lottie.asset("asset/json_files/product_load.json"));
+                                        }
+                                        final localImages = snapshot.data ?? [];
+                                        if (localImages.isEmpty) {
+                                          return Container(
+                                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(15),
+                                              color: Colors.grey[200],
+                                            ),
+                                            child: const Center(child: Icon(Icons.image_not_supported)),
+                                          );
+                                        }
+                                        return Container(
+                                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.05),
+                                                blurRadius: 8,
+                                                spreadRadius: 2,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: Image.asset(
-                                          widget.product.images[index],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(15),
+                                            child: Image.file(
+                                              File(localImages[index]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
                                 ),
@@ -132,7 +154,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: List.generate(
-                                  widget.product.images.length,
+                                  widget.product.variants.length,
                                   (index) => buildDot(index),
                                 ),
                               ),
@@ -154,7 +176,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                               ),
                               const SizedBox(height: 15),
                               Text(
-                                "Select Quantities",
+                                "Select Variants",
                                 style: TextStyle(
                                   fontSize: GSizes.fontSizeMd1,
                                   fontWeight: FontWeight.w500,
@@ -163,18 +185,18 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                               ),
                               const SizedBox(height: 15),
 
-                              // Custom Quantity Selection
+                              // Custom Variant Selection
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(color: Colors.grey.shade200, width: 1),
                                 ),
                                 child: Column(
-                                  children: widget.product.options.map((option) {
+                                  children: widget.product.variants.map((variant) {
                                     return buildUnitOption(
-                                      option,
+                                      variant,
                                       cart,
-                                      cart.items[widget.product.id],
+                                      cart.items["${widget.product.id}_${variant.sku}"],
                                     );
                                   }).toList(),
                                 ),
@@ -276,21 +298,21 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                       GestureDetector(
                         onTap: hasSelections
                             ? () {
-                                // Add all selected options to cart if not already added
-                                for (var option in selectedOptions) {
-                                  if (!optionsInCart.containsKey(option) || optionsInCart[option] == false) {
+                                // Add all selected variants to cart if not already added
+                                for (var variant in selectedVariants) {
+                                  if (!variantsInCart.containsKey(variant) || variantsInCart[variant] == false) {
                                     final modifiedProduct = model.Product(
-                                      price: widget.product.price,
-                                      id: "${widget.product.id}_${option.quantity}",
-                                      title: "${widget.product.title} (${option.quantity})",
+                                      id: "${widget.product.id}_${variant.sku}",
+                                      title: "${widget.product.title} (${variant.sku})",
                                       description: widget.product.description,
                                       category: widget.product.category,
-                                      images: widget.product.images,
-                                      options: [option],
+                                      variants: [variant],
+                                      createdAt: widget.product.createdAt,
+                                      updatedAt: widget.product.updatedAt,
                                     );
                                     
                                     cart.addItem(modifiedProduct);
-                                    optionsInCart[option] = true;
+                                    variantsInCart[variant] = true;
                                   }
                                 }
                                 showToast('Products added to cart');
@@ -325,14 +347,14 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
     );
   }
 
-  Widget buildUnitOption(model.ProductOption option, Cart cart, CartItem? cartItem) {
-    bool isSelected = selectedOptions.contains(option);
-    final String optionSpecificId = "${widget.product.id}_${option.quantity}";
-    final optionCartItem = cart.items[optionSpecificId];
-    final bool isInCart = optionCartItem != null;
+  Widget buildUnitOption(model.ProductVariant variant, Cart cart, CartItem? cartItem) {
+    bool isSelected = selectedVariants.contains(variant);
+    final String variantSpecificId = "${widget.product.id}_${variant.sku}";
+    final variantCartItem = cart.items[variantSpecificId];
+    final bool isInCart = variantCartItem != null;
     
-    if (isInCart && !optionsInCart.containsKey(option)) {
-      optionsInCart[option] = true;
+    if (isInCart && !variantsInCart.containsKey(variant)) {
+      variantsInCart[variant] = true;
     }
 
     return Container(
@@ -352,28 +374,28 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
           onTap: () {
             setState(() {
               if (isSelected) {
-                selectedOptions.remove(option);
+                selectedVariants.remove(variant);
                 if (isInCart) {
-                  cart.removeItem(optionSpecificId);
-                  optionsInCart[option] = false;
-                  showToast('${widget.product.title} (${option.quantity}) removed from cart');
+                  cart.removeItem(variantSpecificId);
+                  variantsInCart[variant] = false;
+                  showToast('${widget.product.title} (${variant.sku}) removed from cart');
                 }
               } else {
-                selectedOptions.add(option);
+                selectedVariants.add(variant);
                 if (!isInCart) {
                   final modifiedProduct = model.Product(
-                    price: widget.product.price,
-                    id: optionSpecificId,
-                    title: "${widget.product.title} (${option.quantity})",
+                    id: variantSpecificId,
+                    title: "${widget.product.title} (${variant.sku})",
                     description: widget.product.description,
                     category: widget.product.category,
-                    images: widget.product.images,
-                    options: [option],
+                    variants: [variant],
+                    createdAt: widget.product.createdAt,
+                    updatedAt: widget.product.updatedAt,
                   );
                   
                   cart.addItem(modifiedProduct);
-                  optionsInCart[option] = true;
-                  showToast('${widget.product.title} (${option.quantity}) added to cart');
+                  variantsInCart[variant] = true;
+                  showToast('${widget.product.title} (${variant.sku}) added to cart');
                 }
               }
             });
@@ -410,7 +432,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      option.quantity.toString(),
+                      variant.sku,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -418,14 +440,44 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      "₹${option.price.toStringAsFixed(1)}",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: GColors.primary,
-                      ),
+                    Row(
+                      children: [
+                        if (variant.specialPrice != null) ...[
+                          Text(
+                            "₹${variant.specialPrice}",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: GColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "₹${variant.mrp}",
+                            style: TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ] else
+                          Text(
+                            "₹${variant.mrp}",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: GColors.primary,
+                            ),
+                          ),
+                      ],
                     ),
+                    if (!variant.inStock)
+                      const Text(
+                        "Out of Stock",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                   ],
                 ),
                 const Spacer(),
@@ -441,16 +493,16 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                         // Decrease quantity button
                         GestureDetector(
                           onTap: () {
-                            if (optionCartItem.quantity > 1) {
+                            if (variantCartItem.quantity > 1) {
                               cart.updateQuantity(
-                                  optionSpecificId, optionCartItem.quantity - 1);
+                                  variantSpecificId, variantCartItem.quantity - 1);
                             } else {
-                              cart.removeItem(optionSpecificId);
-                              optionsInCart[option] = false;
+                              cart.removeItem(variantSpecificId);
+                              variantsInCart[variant] = false;
                               // Also uncheck the box when removing the last item
-                              selectedOptions.remove(option);
+                              selectedVariants.remove(variant);
                             }
-                            showToast('${widget.product.title} (${option.quantity}) updated');
+                            showToast('${widget.product.title} (${variant.sku}) updated');
                             setState(() {});
                           },
                           child: Container(
@@ -475,7 +527,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                           height: 36,
                           alignment: Alignment.center,
                           child: Text(
-                            '${optionCartItem.quantity}',
+                            '${variantCartItem.quantity}',
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -486,7 +538,7 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                         GestureDetector(
                           onTap: () {
                             cart.updateQuantity(
-                                optionSpecificId, optionCartItem.quantity + 1);
+                                variantSpecificId, variantCartItem.quantity + 1);
                             setState(() {});
                           },
                           child: Container(
@@ -512,18 +564,18 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                   GestureDetector(
                     onTap: () {
                       final modifiedProduct = model.Product(
-                        price: widget.product.price,
-                        id: optionSpecificId,
-                        title: "${widget.product.title} (${option.quantity})",
+                        id: variantSpecificId,
+                        title: "${widget.product.title} (${variant.sku})",
                         description: widget.product.description,
                         category: widget.product.category,
-                        images: widget.product.images,
-                        options: [option],
+                        variants: [variant],
+                        createdAt: widget.product.createdAt,
+                        updatedAt: widget.product.updatedAt,
                       );
                       
                       cart.addItem(modifiedProduct);
-                      optionsInCart[option] = true;
-                      showToast('${widget.product.title} (${option.quantity}) added to cart');
+                      variantsInCart[variant] = true;
+                      showToast('${widget.product.title} (${variant.sku}) added to cart');
                       setState(() {});
                     },
                     child: Container(

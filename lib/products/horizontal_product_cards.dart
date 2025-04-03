@@ -9,6 +9,7 @@ import 'package:e_mart/widgets/wishlist_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:e_mart/services/product_service.dart';
+import 'dart:io';
 
 class HorizontalProductCards extends StatefulWidget {
   final List<Product> product;
@@ -86,10 +87,32 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
                                 },
                               );
                             },
-                            child: Image.asset(
-                              product.images.isNotEmpty ? product.images.first : '',
-                              height: 130,
-                              width: 160,
+                            child: FutureBuilder<List<String>>(
+                              future: product.downloadImages(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const SizedBox(
+                                    height: 130,
+                                    width: 160,
+                                    child: Center(child: CircularProgressIndicator()),
+                                  );
+                                }
+                                
+                                final localImages = snapshot.data ?? [];
+                                return localImages.isNotEmpty
+                                    ? Image.file(
+                                        File(localImages.first),
+                                        height: 130,
+                                        width: 160,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Container(
+                                        height: 130,
+                                        width: 160,
+                                        color: Colors.grey[300],
+                                        child: Icon(Icons.image_not_supported),
+                                      );
+                              },
                             ),
                           ),
                           Text(
@@ -99,15 +122,26 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
                                 fontWeight: FontWeight.w500,
                                 color: GColors.textPrimary),
                           ),
-                          Text(
-                            product.description,
-                            style: TextStyle(
-                                fontSize: GSizes.fontSizeSm1,
-                                color: GColors.textPrimary),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          
+                          if (product.variants.isNotEmpty) ...[
+                            Text(
+                              product.variants.first.specialPrice != null
+                                  ? '₹${product.variants.first.specialPrice}'
+                                  : '₹${product.variants.first.mrp}',
+                              style: TextStyle(
+                                fontSize: GSizes.fontSizeMd,
+                                fontWeight: FontWeight.w600,
+                                color: GColors.primary,
+                              ),
+                            ),
+                            if (product.variants.first.specialPrice != null)
+                              Text(
+                                '₹${product.variants.first.mrp}',
+                                style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                          ],
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

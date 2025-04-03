@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../products/product_model.dart';
 
 class ProductService {
@@ -8,6 +9,7 @@ class ProductService {
 
   ProductService._internal();
 
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
   List<Product> _products = [];
   bool _isFetched = false;
 
@@ -15,7 +17,20 @@ class ProductService {
     if (_isFetched) return _products;
 
     try {
-      final response = await http.get(Uri.parse('https://productfetcher-production-6da4.up.railway.app/products'));
+      // Retrieve the token from storage
+      String? token = await _storage.read(key: 'token');
+
+      if (token == null) {
+        throw Exception('Authentication token is missing. Please log in.');
+      }
+
+      final response = await http.get(
+        Uri.parse('https://e-mart-backend-authentication-production.up.railway.app/products'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -31,6 +46,8 @@ class ProductService {
         } else {
           throw Exception('Invalid JSON structure: "products" key is missing or not a list');
         }
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized! Invalid or expired token.');
       } else {
         throw Exception('Failed to load products: ${response.statusCode}');
       }

@@ -32,7 +32,7 @@ class Cart with ChangeNotifier {
   double get totalAmount {
     double total = 0.0;
     _items.forEach((key, cartItem) {
-      total += cartItem.product.options.first.price * cartItem.quantity;  // Example using price from ProductOption
+      total += cartItem.product.variants.first.mrp * cartItem.quantity;  // Example using price from ProductOption
     });
     return total;
   }
@@ -119,14 +119,14 @@ class Cart with ChangeNotifier {
     _syncWithServer(
       product.id,
       _items[product.id]!.quantity,
-      product.options.first.price,
+      product.variants.first.mrp,
     );
   }
 
   void removeItem(String productId) {
     if (_items.containsKey(productId)) {
       // Get the price before removing the item
-      final price = _items[productId]!.product.options.first.price;
+      final price = _items[productId]!.product.variants.first.mrp;
 
       _items.remove(productId);
       notifyListeners();
@@ -151,7 +151,7 @@ class Cart with ChangeNotifier {
         _syncWithServer(
           productId,
           newQuantity,
-          _items[productId]!.product.options.first.price,
+          _items[productId]!.product.variants.first.mrp,
         );
       } else {
         // If quantity is 0 or negative, remove the item

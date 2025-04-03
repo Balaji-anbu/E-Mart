@@ -4,6 +4,7 @@ import 'package:e_mart/widgets/cart_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'base_stepper.dart';
+import 'dart:io';
 
 class CheckoutPage extends StatefulWidget {
   @override
@@ -53,21 +54,49 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 itemBuilder: (context, index) {
                   final cartItem = cart.items.values.toList()[index];
                   final product = cartItem.product;
-                  final selectedOption = product.options.first; // Assuming the first option is selected
+                  final variant = product.variants.firstWhere(
+                    (v) => v.sku == cartItem.product,
+                    orElse: () => product.variants.first,
+                  );
 
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
-                      leading: Image.network(
-                        product.images.isNotEmpty ? product.images.first : '',
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
+                      leading: FutureBuilder<List<String>>(
+                        future: product.downloadImages(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+
+                          final localImages = snapshot.data ?? [];
+                          return Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: localImages.isNotEmpty
+                                  ? Image.file(
+                                      File(localImages.first),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(Icons.image_not_supported),
+                            ),
+                          );
+                        },
                       ),
                       title: Text(product.title),
                       subtitle: Text('Quantity: ${cartItem.quantity}'),
                       trailing: Text(
-                        '₹${(selectedOption.price * cartItem.quantity).toStringAsFixed(2)}',
+                        '₹${(variant.mrp * cartItem.quantity).toStringAsFixed(2)}',
                       ),
                     ),
                   );

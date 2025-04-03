@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/constants/sizes.dart';
 import 'package:e_mart/pages/cart_page.dart';
@@ -53,88 +54,110 @@ class WishlistPage extends StatelessWidget {
           const SizedBox(width: 20),
         ],
       ),
-      body: wishlist.items.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LottieBuilder.asset(
-              'asset/json_files/emptyCart.json',
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Your wishlist is empty!',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, "/bottomPage");
-              },
-              style: ElevatedButton.styleFrom(foregroundColor: GColors.textSecondary,backgroundColor: GColors.secondary),
-              child: const Text('Continue Shopping'),
-            ),
-          ],
-        ),
-      )
-          : ListView.builder(
-        itemCount: wishlist.items.length,
-        itemBuilder: (context, index) {
-          final productId = wishlist.items.keys.toList()[index];
-          final wishlistItem = wishlist.items[productId]!;
-          final product = wishlistItem.product;
-
-          return Card(
-            margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
+      body: Consumer<Wishlist>(
+        builder: (context, wishlist, child) {
+          if (wishlist.items.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 100,
-                    child: Image.asset(
-                      product.images.first, // Displaying the first image from the product
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+                  LottieBuilder.asset(
+                    'asset/json_files/emptyCart.json',
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Your wishlist is empty!',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 18),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.title,
-                          style: TextStyle(
-                            fontSize: GSizes.fontSizeMd1,
-                            fontWeight: FontWeight.w500,
-                            color: GColors.textPrimary,
-                          ),
-                        ),
-                        Text(
-                          product.description,
-                          style: TextStyle(
-                            fontSize: GSizes.fontSizeSm1,
-                            color: GColors.textPrimary,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          '₹${product.options.first.price.toStringAsFixed(2)}', // Price from the first ProductOption
-                          style: TextStyle(
-                            fontSize: GSizes.fontSizeSm1,
-                            fontWeight: FontWeight.w500,
-                            color: GColors.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, "/bottomPage");
+                    },
+                    style: ElevatedButton.styleFrom(
+                        foregroundColor: GColors.textSecondary,
+                        backgroundColor: GColors.secondary),
+                    child: const Text('Continue Shopping'),
                   ),
-                  Column(
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: wishlist.items.length,
+            itemBuilder: (ctx, i) {
+              final productId = wishlist.items.keys.toList()[i];
+              final wishlistItem = wishlist.items[productId]!;
+              final product = wishlistItem.product;
+              final firstVariant =
+                  product.variants.isNotEmpty ? product.variants.first : null;
+
+              return Card(
+                margin: const EdgeInsets.all(10),
+                child: ListTile(
+                  leading: FutureBuilder<List<String>>(
+                    future: product.downloadImages(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+
+                      final localImages = snapshot.data ?? [];
+                      final file = localImages.isNotEmpty ? File(localImages.first) : null;
+
+                      if (file != null && file.existsSync() && file.lengthSync() > 0) {
+                        return Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              file,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.image_not_supported);
+                              },
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey[200],
+                          ),
+                          child: const Icon(Icons.image_not_supported),
+                        );
+                      }
+                    },
+                  ),
+                  title: Text(product.title),
+                  subtitle: firstVariant != null
+                      ? Text(
+                          firstVariant.specialPrice != null
+                              ? '₹${firstVariant.specialPrice}'
+                              : '₹${firstVariant.mrp}',
+                          style: const TextStyle(
+                            color: GColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : const Text('No price available'),
+                  trailing: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       IconButton(
@@ -145,6 +168,7 @@ class WishlistPage extends StatelessWidget {
                         ),
                         onPressed: () {
                           wishlist.removeItem(product.id);
+                          showToast('${product.title} removed from wishlist');
                         },
                       ),
                       IconButton(
@@ -162,9 +186,9 @@ class WishlistPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           );
         },
       ),

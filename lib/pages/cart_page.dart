@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:customizable_counter/customizable_counter.dart';
 import 'package:e_mart/constants/colors.dart';
 import 'package:e_mart/pages/address_list_page.dart';
@@ -20,7 +21,6 @@ class _CartPageState extends State<CartPage> {
     super.initState();
     Provider.of<Cart>(context, listen: false).fetchCartFromServer();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -88,25 +88,62 @@ class _CartPageState extends State<CartPage> {
                       itemBuilder: (context, index) {
                         final cartItem = cart.items.values.toList()[index];
                         final product = cartItem.product; // Accessing the product from CartItem
+                        final variant = product.variants.firstWhere(
+                          (v) => v.sku == cartItem.product,
+                          orElse: () => product.variants.first,
+                        );
+
                         return Card(
                           margin: const EdgeInsets.all(6.0),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      color: Colors.black,
-                                      height: 100,
-                                      child: Image.asset(
-                                        product.images[0],
+                                FutureBuilder<List<String>>(
+                                  future: product.downloadImages(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const SizedBox(
                                         width: 100,
                                         height: 100,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ],
+                                        child: Center(child: CircularProgressIndicator()),
+                                      );
+                                    }
+
+                                    final localImages = snapshot.data ?? [];
+                                    final file = localImages.isNotEmpty ? File(localImages.first) : null;
+
+                                    if (file != null && file.existsSync() && file.lengthSync() > 0) {
+                                      return Container(
+                                        width: 100,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4),
+                                          border: Border.all(color: Colors.grey.shade200),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(4),
+                                          child: Image.file(
+                                            file,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return const Icon(Icons.image_not_supported);
+                                            },
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 100,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4),
+                                          color: Colors.grey[200],
+                                        ),
+                                        child: const Icon(Icons.image_not_supported),
+                                      );
+                                    }
+                                  },
                                 ),
                                 const SizedBox(width: 18),
                                 Expanded(
@@ -134,7 +171,7 @@ class _CartPageState extends State<CartPage> {
                                         },
                                       ),
                                       Text(
-                                        '₹${product.options[0].price.toStringAsFixed(1)}',
+                                        '₹${variant.mrp.toStringAsFixed(1)}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall,
