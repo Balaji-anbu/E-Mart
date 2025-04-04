@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:e_mart/products/product_model.dart';
 import 'package:lottie/lottie.dart';
 import 'package:e_mart/services/product_service.dart';
+import 'package:e_mart/products/horizontal_product_cards.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,12 +35,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Map<String, List<Product>> _groupProductsByCategory(List<Product> products) {
-    final Map<String, List<Product>> groupedProducts = {};
-    for (var product in products) {
-      groupedProducts.putIfAbsent(product.category, () => []).add(product);
+  List<List<Product>> _splitProductsIntoChunks(List<Product> products, int chunkSize) {
+    List<List<Product>> chunks = [];
+    for (var i = 0; i < products.length; i += chunkSize) {
+      chunks.add(
+        products.sublist(
+          i,
+          i + chunkSize > products.length ? products.length : i + chunkSize,
+        ),
+      );
     }
-    return groupedProducts;
+    return chunks;
   }
 
   @override
@@ -65,48 +71,43 @@ class _HomePageState extends State<HomePage> {
           }
 
           final products = snapshot.data!;
-          final groupedProducts = _groupProductsByCategory(products);
+          final productChunks = _splitProductsIntoChunks(products, 20);
 
           return SingleChildScrollView(
             controller: _scrollController,
             child: Column(
               children: [
-                // Popular categories
                 const PopularCategories(),
-
-                // Image carousel
                 ImageCarousel(),
-
-                // Display products grouped by category
-                ...groupedProducts.entries.map((entry) {
-                  final category = entry.key;
-                  final categoryProducts = entry.value;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Text(
-                          category,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: GColors.textPrimary,
+                ...List.generate(productChunks.length, (index) {
+                  // Alternate between grid and horizontal layouts
+                  if (index % 2 == 0) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          child: Text(
+                            'Featured Products ${index + 1}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: GColors.textPrimary,
+                            ),
                           ),
                         ),
-                      ),
-                      ProductCards(product: categoryProducts),
-                    ],
-                  );
-                }).toList(),
+                        ProductCards(product: productChunks[index]),
+                      ],
+                    );
+                  } else {
+                    return HorizontalProductCards(product: productChunks[index]);
+                  }
+                }),
               ],
             ),
           );
         },
       ),
-
-      // Floating arrow button
       floatingActionButton: _scrollController.hasClients && _scrollController.offset > 100
           ? FloatingActionButton(
               backgroundColor: GColors.secondary,
@@ -115,8 +116,6 @@ class _HomePageState extends State<HomePage> {
               child: const Icon(Icons.arrow_upward),
             )
           : null,
-
-      // Drawer
       endDrawer: const TopDrawer(),
     );
   }

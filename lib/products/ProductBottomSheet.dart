@@ -107,7 +107,6 @@ class _ProductModalBottomSheetState extends State<ProductModalBottomSheet> with 
                                     });
                                   },
                                   itemBuilder: (context, index) {
-                                    final variant = widget.product.variants[index];
                                     return FutureBuilder<List<String>>(
                                       future: widget.product.downloadImages(),
                                       builder: (context, snapshot) {

@@ -5,37 +5,68 @@ class ImageCarousel extends StatelessWidget {
   ImageCarousel({super.key});
 
   final List<String> listImages = [
-    'asset/images/foodgrain.jpg',
-    'asset/images/foodgrain.jpg',
-    'asset/images/foodgrain.jpg',
-    'asset/images/foodgrain.jpg',
-    'asset/images/foodgrain.jpg',
-    'asset/images/foodgrain.jpg',
+    'asset/images/test1.jpg',
+    'asset/images/test2.jpg',
+    'asset/images/test3.jpg',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 210.0,
-          autoPlay: true, // Enables auto-scrolling
-          autoPlayInterval: Duration(seconds: 3), // Time between slides
-          autoPlayAnimationDuration: Duration(milliseconds: 800), // Smooth transition
-          autoPlayCurve: Curves.easeInOut,
+          height: 220,
+          autoPlay: true,
+          autoPlayInterval: Duration(seconds: 3),
+          autoPlayAnimationDuration: Duration(milliseconds: 800),
+          autoPlayCurve: Curves.fastOutSlowIn,
           enlargeCenterPage: true,
-          enableInfiniteScroll: true, 
-          viewportFraction: 0.85, 
+          enableInfiniteScroll: true,
+          viewportFraction: 0.88,
         ),
         items: listImages.map((imagePath) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.cover,
-              width: double.infinity,
-            ),
+          return Builder(
+            builder: (BuildContext context) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0.4),
+                            Colors.transparent,
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                    // Optional caption text (can remove if not needed)
+                    // Positioned(
+                    //   bottom: 10,
+                    //   left: 15,
+                    //   child: Text(
+                    //     'Caption Here',
+                    //     style: TextStyle(
+                    //       color: Colors.white,
+                    //       fontSize: 16,
+                    //       fontWeight: FontWeight.bold,
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              );
+            },
           );
         }).toList(),
       ),

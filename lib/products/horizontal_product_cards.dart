@@ -35,16 +35,22 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
             children: [
               Text(
                 'Products',
-                style: TextStyle(fontSize: GSizes.fontSizeXl1, fontWeight: FontWeight.w500, color: GColors.textPrimary),
+                style: TextStyle(fontSize: GSizes.fontSizeXl1, fontWeight: FontWeight.w600, color: GColors.textPrimary),
               ),
               const Spacer(),
               GestureDetector(
-                child: Text(
-                  'View all',
-                  style: TextStyle(
-                      fontSize: GSizes.fontSizeMd,
-                      fontWeight: FontWeight.w500,
-                      color: GColors.secondary),
+                child: Row(
+                  children: [
+                    Text(
+                      'View all',
+                      style: TextStyle(
+                          fontSize: GSizes.fontSizeMd,
+                          fontWeight: FontWeight.w500,
+                          color: GColors.secondary),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 14, color: GColors.secondary),
+                  ],
                 ),
                 onTap: () {
                   Navigator.push(
@@ -57,25 +63,37 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
               ),
             ],
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: products.map((product) {
-                  final cartItem = cart.items[product.id];
-                  final wishlistItem = wishlist.items[product.id];
+          const SizedBox(height: 4),
+          SizedBox(
+            height: 320, // Fixed height for consistent presentation
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: products.length,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              itemBuilder: (context, index) {
+                final product = products[index];
+                final cartItem = cart.items[product.id];
+                final wishlistItem = wishlist.items[product.id];
 
-                  return Card(
+                return Container(
+                  width: 180,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
                     color: GColors.accent,
-                    margin: const EdgeInsets.symmetric(vertical: GSizes.sm, horizontal: GSizes.sm),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Product image with wishlist button overlay and discount badge
+                      Stack(
                         children: [
                           InkWell(
                             onTap: () {
@@ -87,72 +105,101 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
                                 },
                               );
                             },
-                            child: FutureBuilder<List<String>>(
-                              future: product.downloadImages(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const SizedBox(
-                                    height: 130,
-                                    width: 160,
-                                    child: Center(child: CircularProgressIndicator()),
-                                  );
-                                }
-                                
-                                final localImages = snapshot.data ?? [];
-                                return localImages.isNotEmpty
-                                    ? Image.file(
-                                        File(localImages.first),
-                                        height: 130,
-                                        width: 160,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Container(
-                                        height: 130,
-                                        width: 160,
-                                        color: Colors.grey[300],
-                                        child: Icon(Icons.image_not_supported),
-                                      );
-                              },
-                            ),
-                          ),
-                          Text(
-                            product.title,
-                            style: TextStyle(
-                                fontSize: GSizes.fontSizeMd1,
-                                fontWeight: FontWeight.w500,
-                                color: GColors.textPrimary),
-                          ),
-                          if (product.variants.isNotEmpty) ...[
-                            Text(
-                              product.variants.first.specialPrice != null
-                                  ? '₹${product.variants.first.specialPrice}'
-                                  : '₹${product.variants.first.mrp}',
-                              style: TextStyle(
-                                fontSize: GSizes.fontSizeMd,
-                                fontWeight: FontWeight.w600,
-                                color: GColors.primary,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(12),
+                                topRight: Radius.circular(12),
                               ),
-                            ),
-                            if (product.variants.first.specialPrice != null)
-                              Text(
-                                '₹${product.variants.first.mrp}',
-                                style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: Colors.grey.shade600,
+                              child: Container(
+                                height: 140,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                ),
+                                child: FutureBuilder<List<String>>(
+                                  future: product.downloadImages(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(
+                                        child: SizedBox(
+                                          height: 30,
+                                          width: 30,
+                                          child: CircularProgressIndicator(strokeWidth: 2.5),
+                                        ),
+                                      );
+                                    }
+                                    
+                                    final localImages = snapshot.data ?? [];
+                                    return localImages.isNotEmpty
+                                        ? Image.file(
+                                            File(localImages.first),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Center(
+                                            child: Icon(Icons.image_not_supported, color: Colors.grey),
+                                          );
+                                  },
                                 ),
                               ),
-                          ],
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              // Wishlist IconButton
-                              IconButton(
+                            ),
+                          ),
+                          // Sale discount tag - top left corner
+                          if (product.variants.isNotEmpty && 
+                              product.variants.first.specialPrice != null)
+                            Builder(
+                              builder: (context) {
+                                final mrp = product.variants.first.mrp;
+                                final specialPrice = product.variants.first.specialPrice!;
+                                final discountPercentage = ((mrp - specialPrice) / mrp) * 100;
+                                
+                                // Only show badge if discount is more than 1%
+                                if (discountPercentage > 1) {
+                                  return Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(12),
+                                          bottomRight: Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        '${discountPercentage.toStringAsFixed(0)}% OFF',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: GSizes.fontSizeSm,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              },
+                            ),
+                          // Wishlist button
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                shape: BoxShape.circle,
+                              ),
+                              child: IconButton(
+                                constraints: const BoxConstraints(
+                                  minHeight: 36,
+                                  minWidth: 36,
+                                ),
+                                padding: EdgeInsets.zero,
+                                iconSize: 20,
                                 onPressed: () {
-                                  // If wishlistItem is null, add product to wishlist; otherwise, remove it.
                                   if (wishlistItem == null) {
-                                    wishlist.addItem(
-                                      product, // Pass the entire product object
-                                    );
+                                    wishlist.addItem(product);
                                     showToast('${product.title} added to wishlist');
                                   } else {
                                     wishlist.removeItem(product.id);
@@ -166,78 +213,154 @@ class _HorizontalProductCardsState extends State<HorizontalProductCards> {
                                   color: GColors.error,
                                 ),
                               ),
-
-                              // Add to Cart Button (only show if the product is not in the cart)
-                              cartItem == null
-                                  ? ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.all(4),
-                                  minimumSize: const Size(25, 25),
-                                  backgroundColor: GColors.secondary,
-                                  foregroundColor: GColors.white,
-                                ),
-                                child: const Icon(Icons.add),
-                                onPressed: () {
-                                  cart.addItem(
-                                    product, // Pass the entire product object
-                                  );
-                                  showToast('${product.title} added to cart');
-                                },
-                              )
-                                  : const SizedBox.shrink(),
-
-                              // Quantity Update Row (only show if the product is in the cart)
-                              cartItem != null
-                                  ? Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Decrease Quantity or Remove from Cart
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.all(5),
-                                      minimumSize: const Size(25, 25),
-                                      backgroundColor: GColors.secondary,
-                                      foregroundColor: GColors.white,
-                                    ),
-                                    child: Icon(Icons.remove, size: GSizes.iconSm),
-                                    onPressed: () {
-                                      if (cartItem.quantity > 1) {
-                                        cart.updateQuantity(product.id, cartItem.quantity - 1);
-                                      } else {
-                                        cart.removeItem(product.id);
-                                        showToast('${product.title} removed from cart');
-                                      }
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Text('${cartItem.quantity}'),
-                                  ),
-                                  // Increase Quantity
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.all(5),
-                                      minimumSize: const Size(30, 30),
-                                      backgroundColor: GColors.secondary,
-                                      foregroundColor: GColors.white,
-                                    ),
-                                    child: Icon(Icons.add, size: GSizes.iconSm),
-                                    onPressed: () {
-                                      cart.updateQuantity(product.id, cartItem.quantity + 1);
-                                    },
-                                  ),
-                                ],
-                              )
-                                  : const SizedBox.shrink(),
-                            ],
-                          )
-
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
+                      // Product details
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Product title - limited to 2 lines with overflow ellipsis
+                            SizedBox(
+                              height: 40, // Fixed height for two lines
+                              child: Text(
+                                product.title,
+                                style: TextStyle(
+                                  fontSize: GSizes.fontSizeMd,
+                                  fontWeight: FontWeight.w500,
+                                  color: GColors.textPrimary,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            // Pricing section
+                            if (product.variants.isNotEmpty) ...[
+                              Row(
+                                children: [
+                                  Text(
+                                    product.variants.first.specialPrice != null
+                                        ? '₹${product.variants.first.specialPrice}'
+                                        : '₹${product.variants.first.mrp}',
+                                    style: TextStyle(
+                                      fontSize: GSizes.fontSizeMd1,
+                                      fontWeight: FontWeight.w600,
+                                      color: GColors.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  if (product.variants.first.specialPrice != null)
+                                    Text(
+                                      '₹${product.variants.first.mrp}',
+                                      style: TextStyle(
+                                        fontSize: GSizes.fontSizeSm,
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                ],
+                              ),
+
+                            ],
+                            const SizedBox(height: 8),
+                            // Cart interaction section
+                            cartItem == null
+                                ? SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
+                                        backgroundColor: GColors.secondary,
+                                        foregroundColor: GColors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        cart.addItem(product);
+                                        showToast('${product.title} added to cart');
+                                      },
+                                      child: Text(
+                                        'Add to Cart',
+                                        style: TextStyle(
+                                          fontSize: GSizes.fontSizeSm,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    height: 34,
+                                    decoration: BoxDecoration(
+                                      color: GColors.secondary.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Decrease button
+                                        InkWell(
+                                          onTap: () {
+                                            if (cartItem.quantity > 1) {
+                                              cart.updateQuantity(product.id, cartItem.quantity - 1);
+                                            } else {
+                                              cart.removeItem(product.id);
+                                              showToast('${product.title} removed from cart');
+                                            }
+                                          },
+                                          child: Container(
+                                            height: double.infinity,
+                                            width: 34,
+                                            decoration: BoxDecoration(
+                                              color: GColors.secondary,
+                                              borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(8),
+                                                bottomLeft: Radius.circular(8),
+                                              ),
+                                            ),
+                                            child: Icon(Icons.remove, color: GColors.white, size: 18),
+                                          ),
+                                        ),
+                                        // Quantity
+                                        Text(
+                                          '${cartItem.quantity}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: GColors.secondary,
+                                          ),
+                                        ),
+                                        // Increase button
+                                        InkWell(
+                                          onTap: () {
+                                            cart.updateQuantity(product.id, cartItem.quantity + 1);
+                                          },
+                                          child: Container(
+                                            height: double.infinity,
+                                            width: 34,
+                                            decoration: BoxDecoration(
+                                              color: GColors.secondary,
+                                              borderRadius: const BorderRadius.only(
+                                                topRight: Radius.circular(8),
+                                                bottomRight: Radius.circular(8),
+                                              ),
+                                            ),
+                                            child: Icon(Icons.add, color: GColors.white, size: 18),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],

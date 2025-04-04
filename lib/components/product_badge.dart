@@ -14,7 +14,7 @@ class ProductBadge extends StatelessWidget {
     
     // Badge configurations
     final bool isTrending = type == BadgeType.trending;
-    final Color badgeColor = isTrending ? Colors.redAccent : GColors.secondary;
+    final Color badgeColor = isTrending ? Colors.blueAccent : GColors.secondary;
     final String badgeText = isTrending ? 'Trending' : 'Best Seller';
     final IconData badgeIcon = isTrending 
         ? Icons.trending_up_rounded 

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'dart:ui';
 import 'package:e_mart/components/product_badge.dart';
 
