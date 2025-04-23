@@ -89,13 +89,13 @@ class _ProductCardsState extends State<ProductCards> {
                     // Image container with rounded corners
                     ClipRRect(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
                       ),
                       child: Hero(
                         tag: 'product-image-${product.id}',
                         child: Container(
-                          height: screenWidth < 600 ? 180 : 180,
+                          height: screenWidth < 600 ? 190 : 180,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: const Color(0xFFF5F7FA),

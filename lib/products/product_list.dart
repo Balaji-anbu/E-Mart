@@ -4,6 +4,8 @@ import 'package:e_mart/products/product_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:lottie/lottie.dart';
+
 class ProductList extends StatelessWidget {
   final List<Product> products;
 
@@ -25,10 +27,10 @@ class ProductList extends StatelessWidget {
               future: product.downloadImages(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
+                  return  SizedBox(
                     width: 50,
                     height: 50,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: Lottie.asset('asset/json_files/product_load.json')),
                   );
                 }
                 

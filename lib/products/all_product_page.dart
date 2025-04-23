@@ -9,6 +9,8 @@ import 'package:badges/badges.dart' as badges;
 import '../widgets/cart_model.dart';
 import '../pages/cart_page.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
+import 'dart:ui';
 
 class AllProductPage extends StatefulWidget {
   const AllProductPage({super.key});
@@ -40,7 +42,7 @@ class _AllProductPageState extends State<AllProductPage> with TickerProviderStat
     try {
       final products = await ProductService().fetchProducts();
       final categories = _getUniqueCategories(products);
-      
+
       setState(() {
         _products = products;
         _filteredProducts = products;
@@ -87,69 +89,120 @@ class _AllProductPageState extends State<AllProductPage> with TickerProviderStat
     });
   }
 
+  Widget _buildSearchBar() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            hintText: 'Search products...',
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.1),
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: _searchController.text.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                  )
+                : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return ListView.builder(
+      itemCount: 8,
+      itemBuilder: (_, __) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 100,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: GColors.accent,
       appBar: AppBar(
         backgroundColor: GColors.primary,
-        foregroundColor: GColors.textSecondary,
-        title: const Text('Products'),
+        foregroundColor: Colors.white,
+        elevation: 3,
+        title: const Text('All Products'),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.favorite_outline, size: GSizes.iconMd),
+            icon: const Icon(Icons.favorite_border_rounded),
           ),
           Consumer<Cart>(
             builder: (context, cart, child) {
               return badges.Badge(
-                badgeContent: Text(cart.itemCount.toString(), style: TextStyle(color: GColors.textSecondary)),
+                position: badges.BadgePosition.topEnd(top: -8, end: -4),
+                badgeContent: Text('${cart.itemCount}', style: const TextStyle(color: Colors.white, fontSize: 10)),
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const CartPage()));
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 500),
+                        pageBuilder: (_, __, ___) => const CartPage(),
+                        transitionsBuilder: (_, animation, __, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(animation),
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
                   },
-                  child: Icon(Icons.shopping_cart_outlined, size: GSizes.iconMd1, color: GColors.textSecondary),
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 16.0),
+                    child: Icon(Icons.shopping_cart_outlined),
+                  ),
                 ),
               );
             },
           ),
-          const SizedBox(width: 20),
         ],
       ),
       body: _isLoading
-          ? Center(child: Lottie.asset('asset/json_files/product_load.json'))
+          ? _buildShimmer()
           : _isError
-              ? const Center(child: Text("Failed to load products."))
+              ? Center(child: Text("❌ Failed to load products.", style: Theme.of(context).textTheme.titleMedium))
               : Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(GSizes.sm),
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search products...',
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: _searchController.text.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    _searchController.clear();
-                                  },
-                                )
-                              : null,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+                      padding: const EdgeInsets.all(GSizes.md),
+                      child: _buildSearchBar(),
                     ),
                     TabBar(
-                      labelColor: GColors.primary,
-                      indicatorColor: GColors.primary,
                       controller: _mainTabController,
                       isScrollable: true,
+                      labelColor: GColors.primary,
+                      unselectedLabelColor: Colors.grey,
+                      indicator: BoxDecoration(
+                        color: GColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       tabs: _categories.map((category) => Tab(text: category)).toList(),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     Expanded(
                       child: TabBarView(
                         controller: _mainTabController,
@@ -158,10 +211,17 @@ class _AllProductPageState extends State<AllProductPage> with TickerProviderStat
                               ? _products.where((p) => p.category == category).toList()
                               : _filteredProducts.where((p) => p.category == category).toList();
 
-                          return SingleChildScrollView(
-                            controller: _scrollController,
-                            child: ProductCards(
-                              product: categoryProducts.take(_visibleCount).toList(),
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            child: SingleChildScrollView(
+                              key: ValueKey<String>(category + _searchController.text),
+                              controller: _scrollController,
+                              child: Padding(
+                                padding: const EdgeInsets.all(GSizes.sm),
+                                child: ProductCards(
+                                  product: categoryProducts.take(_visibleCount).toList(),
+                                ),
+                              ),
                             ),
                           );
                         }).toList(),

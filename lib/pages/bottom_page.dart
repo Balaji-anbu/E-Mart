@@ -24,7 +24,7 @@ class _bottomPageState extends State<bottomPage> {
 
   final List<Widget> _pages = [
      AllProductPage(),
-    categoriesPage(),
+    CategoriesPage(),
     HomePage(),
     WishlistPage(),
     const CartPage(),

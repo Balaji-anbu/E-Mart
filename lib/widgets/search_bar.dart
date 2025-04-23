@@ -1,22 +1,23 @@
 // import 'dart:convert';
 // import 'package:e_mart/constants/colors.dart';
+// import 'package:e_mart/products/product_model.dart';
 // import 'package:e_mart/widgets/cart_model.dart';
 // import 'package:e_mart/widgets/product_model.dart';
 // import 'package:flutter/material.dart';
 // import 'package:e_mart/constants/sizes.dart';
 // import 'package:flutter/services.dart';
 // import 'package:provider/provider.dart';
-//
+
 // class SearchTextBar extends StatefulWidget {
 //   const SearchTextBar({super.key});
-//
+
 //   @override
 //   _SearchTextBarState createState() => _SearchTextBarState();
 // }
-//
+
 // class _SearchTextBarState extends State<SearchTextBar> {
 //   List<String> searchHistory = [];
-//
+
 //   Future<List<Product>> fetchProducts() async {
 //     final String response = await rootBundle.loadString('asset/json_files/samplej.json');
 //     final data = await json.decode(response);
@@ -24,7 +25,7 @@
 //         .map((productJson) => Product.fromJson(productJson))
 //         .toList();
 //   }
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return Padding(
@@ -54,14 +55,14 @@
 //     );
 //   }
 // }
-//
-//
+
+
 // class ProductSearchDelegate extends SearchDelegate<Product?> {
 //   final List<Product> products;
 //   final List<String> searchHistory;
-//
+
 //   ProductSearchDelegate({required this.products, required this.searchHistory});
-//
+
 //   @override
 //   List<Widget>? buildActions(BuildContext context) {
 //     return [
@@ -74,7 +75,7 @@
 //       ),
 //     ];
 //   }
-//
+
 //   @override
 //   Widget? buildLeading(BuildContext context) {
 //     return IconButton(
@@ -84,14 +85,14 @@
 //       icon:  Icon(Icons.arrow_back,color: GColors.iconPrimary,size: GSizes.iconMd1,),
 //     );
 //   }
-//
+
 //   @override
 //   Widget buildResults(BuildContext context) {
 //     List<Product> matchQuery = products
 //         .where((product) =>
 //         product.title.toLowerCase().startsWith(query.toLowerCase()))
 //         .toList();
-//
+
 //     if (matchQuery.isEmpty) {
 //       return Center(
 //         child: Text(
@@ -100,7 +101,7 @@
 //         ),
 //       );
 //     }
-//
+
 //     // Add the query to the search history
 //     if (query.isNotEmpty && !searchHistory.contains(query)) {
 //       searchHistory.insert(0, query);
@@ -108,7 +109,7 @@
 //         searchHistory.removeLast();
 //       }
 //     }
-//
+
 //     return ListView.builder(
 //       itemCount: matchQuery.length,
 //       itemBuilder: (context, index) {
@@ -143,7 +144,7 @@
 //                       ),
 //                     );
 //                   },
-//
+
 //                   style: ElevatedButton.styleFrom(
 //                     backgroundColor: Colors.green,
 //                     padding: const EdgeInsets.symmetric(horizontal: GSizes.md),
@@ -157,7 +158,7 @@
 //       },
 //     );
 //   }
-//
+
 //   @override
 //   Widget buildSuggestions(BuildContext context) {
 //     if (query.isEmpty) {
@@ -177,12 +178,12 @@
 //         },
 //       );
 //     }
-//
+
 //     List<Product> matchQuery = products
 //         .where((product) =>
 //         product.title.toLowerCase().startsWith(query.toLowerCase()))
 //         .toList();
-//
+
 //     if (matchQuery.isEmpty) {
 //       return Center(
 //         child: Text(
@@ -191,7 +192,7 @@
 //         ),
 //       );
 //     }
-//
+
 //     return ListView.builder(
 //       itemCount: matchQuery.length,
 //       itemBuilder: (context, index) {
@@ -226,7 +227,7 @@
 //                       ),
 //                     );
 //                   },
-//
+
 //                   style: ElevatedButton.styleFrom(
 //                     backgroundColor: Colors.green,
 //                     padding: const EdgeInsets.symmetric(horizontal: GSizes.md),
@@ -241,12 +242,12 @@
 //     );
 //   }
 // }
-//
-//
-//
-//
-//
-//
+
+
+
+
+
+
 // // onTap: () {
 // // query = result.title;
 // // showResults(context);

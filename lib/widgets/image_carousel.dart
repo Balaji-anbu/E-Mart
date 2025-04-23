@@ -13,29 +13,30 @@ class ImageCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      padding: const EdgeInsets.all(0),
       child: CarouselSlider(
+        
         options: CarouselOptions(
           height: 220,
           autoPlay: true,
           autoPlayInterval: Duration(seconds: 3),
-          autoPlayAnimationDuration: Duration(milliseconds: 800),
+          autoPlayAnimationDuration: Duration(milliseconds: 900),
           autoPlayCurve: Curves.fastOutSlowIn,
           enlargeCenterPage: true,
           enableInfiniteScroll: true,
-          viewportFraction: 0.88,
+          viewportFraction: 1,
         ),
         items: listImages.map((imagePath) {
           return Builder(
             builder: (BuildContext context) {
               return ClipRRect(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(5),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.asset(
                       imagePath,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       width: double.infinity,
                     ),
                     Container(
