@@ -29,7 +29,7 @@ class _ProductCardsState extends State<ProductCards> {
     return categorized;
   }
 
-  Widget buildProductCard(BuildContext context, Product product, double screenWidth) {
+  Widget buildProductCard(BuildContext context, Product product, double screenWidth, int index){
     final firstVariant = product.variants.isNotEmpty ? product.variants.first : null;
 
     if (firstVariant == null) {
@@ -92,26 +92,25 @@ class _ProductCardsState extends State<ProductCards> {
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                       ),
-                      child: Hero(
-                        tag: 'product-image-${product.id}',
-                        child: Container(
-                          height: screenWidth < 600 ? 190 : 180,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF5F7FA),
-                          ),
-                          child: hasImage
-                              ? Image.file(
-                                  File(localImages.first),
-                                  fit: BoxFit.cover,
-                                )
-                              : Icon(
-                                  Icons.image_not_supported,
-                                  size: 40,
-                                  color: Colors.grey[400],
-                                ),
-                        ),
-                      ),
+                      child:Hero(
+ tag: 'product-image-${product.id}-${product.title}-${product.category}',  child: Container(
+    height: screenWidth < 600 ? 190 : 180,
+    width: double.infinity,
+    decoration: BoxDecoration(
+      color: const Color(0xFFF5F7FA),
+    ),
+    child: hasImage
+        ? Image.file(
+            File(localImages.first),
+            fit: BoxFit.cover,
+          )
+        : Icon(
+            Icons.image_not_supported,
+            size: 40,
+            color: Colors.grey[400],
+          ),
+  ),
+),
                     ),
                     
                     // Product details
@@ -411,7 +410,7 @@ class _ProductCardsState extends State<ProductCards> {
                 itemCount: entry.value.length,
                 itemBuilder: (context, index) {
                   final product = entry.value[index];
-                  return buildProductCard(context, product, screenWidth);
+                  return buildProductCard(context, product, screenWidth, index);
                 },
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

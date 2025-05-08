@@ -232,3 +232,4 @@ class _AllProductPageState extends State<AllProductPage> with TickerProviderStat
     );
   }
 }
+

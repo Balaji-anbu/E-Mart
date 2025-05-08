@@ -42,6 +42,7 @@ class Product {
   final DateTime updatedAt;
   final List<ProductVariant> variants;
   final BadgeType badgeType;
+  
 
   Product({
     required this.id,
